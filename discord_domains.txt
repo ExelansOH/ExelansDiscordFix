@@ -1,0 +1,23 @@
+# Discord Temel Alan Adlari
+discord.com
+discord.gg
+discordapp.com
+discordapp.net
+discord.media
+discordcdn.com
+discord.dev
+discordstatus.com
+discord.co
+discord.design
+dis.gd
+watchanimeattheoffice.net
+
+# API, Gateway, CDN ve Medya Sunuculari
+gateway.discord.gg
+cdn.discordapp.com
+media.discordapp.net
+images-ext-1.discordapp.net
+images-ext-2.discordapp.net
+status.discord.com
+latency.discord.media
+router.discordapp.net
