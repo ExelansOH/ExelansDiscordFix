@@ -78,34 +78,35 @@ ExelansDiscordFix/
 ## 🛠 Kurulum ve Kullanım
 
 ### Yöntem 1: Hazır `.exe` İle Kullanım (En Kolayı)
-1. `dist/ExelansDiscordFix.exe` dosyasını çalıştırın (Otomatik yönetici izni isteyecektir).
-2. İSS profilinizi seçin (Çoğu kullanıcı için varsayılan Türk Telekom / TurkNet modu uygundur).
-3. **"🚀 Windows Hizmeti Olarak Kur (Kalıcı)"** butonuna tıklayın.
-4. Discord'unuzu açın veya **"🔄 Discord'u Yeniden Başlat"** butonuna basın.
+1. [Releases](https://github.com/ExelansOH/ExelansDiscordFix/releases) sayfasından en son `ExelansDiscordFix.exe` dosyasını indirin (veya projeyi klonlayıp `build.bat` ile kendiniz derleyin).
+2. Dosyayı çalıştırın (Otomatik yönetici izni isteyecektir).
+3. İSS profilinizi seçin (Çoğu kullanıcı için varsayılan Türk Telekom / TurkNet modu uygundur).
+4. **"🚀 Windows Hizmeti Olarak Kur (Kalıcı)"** butonuna tıklayın.
+5. Discord'unuzu açın veya **"🔄 Discord'u Yeniden Başlat"** butonuna basın.
 
-### Yöntem 2: Arayüzsüz `.cmd` İle Kalıcı Servis Kurulumu
+### Yöntem 2: Arayüzsüz Doğrudan `.cmd` İle Kalıcı Servis Kurulumu
 1. `scripts\service_install_discord_only.cmd` dosyasına sağ tıklayın.
 2. **Yönetici Olarak Çalıştır**'ı seçin.
-3. Servis kurulup arka planda otomatik başlayacaktır.
+3. Servis kurulup arka planda otomatik başlayacaktır (Superonline kullanıcıları `scripts\service_install_discord_only_superonline.cmd` çalıştırabilir).
 
 ---
 
-## 💻 Kaynaktan Derleme (Geliştiriciler İçin)
+## 💻 Kaynaktan Çalıştırma ve Derleme (Geliştiriciler İçin)
 
-Projeyi Python ile kendiniz çalıştırmak veya derlemek isterseniz:
+Projeyi doğrudan Python kaynak kodundan çalıştırmak veya kendi `.exe` dosyanızı oluşturmak isterseniz:
 
 ```bash
 # 1. Repoyu klonlayın
-git clone https://github.com/KULLANICI_ADINIZ/ExelansDiscordFix.git
+git clone https://github.com/ExelansOH/ExelansDiscordFix.git
 cd ExelansDiscordFix
 
-# 2. Bağımlılıkları yükleyin
+# 2. Gerekli Python kütüphanelerini yükleyin
 pip install -r requirements.txt
 
-# 3. Arayüzü başlatın
+# 3. Arayüzü doğrudan Python ile başlatın
 python gui.py
 
-# 4. Bağımsız tek dosya .exe derlemek için:
+# 4. İsterseniz tek parça bağımsız .exe haline derleyin
 build.bat
 ```
 
