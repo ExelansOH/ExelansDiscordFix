@@ -22,6 +22,7 @@ sc delete "WinDivert14" >nul 2>&1
 
 sc create "GoodbyeDPI" binPath= "\"%CD%\bin\goodbyedpi.exe\" -5 --set-ttl 5 --dns-addr 77.88.8.8 --dns-port 1253 --dnsv6-addr 2a02:6b8::feed:0ff --dnsv6-port 1253 --blacklist \"%CD%\discord_domains.txt\"" start= "auto"
 sc description "GoodbyeDPI" "Yalnizca Discord icin DPI engelini kaldiran servis (Exelans)."
+sc failure "GoodbyeDPI" reset= 86400 actions= restart/2000/restart/2000/restart/5000
 sc start "GoodbyeDPI"
 
 ipconfig /flushdns

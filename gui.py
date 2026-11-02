@@ -182,8 +182,13 @@ class DiscordFixApp(ctk.CTk):
         self.setup_ui()
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         
-        # Servis durumunu kontrol et
+        # Servis durumunu periyodik kontrol et (Canlı İzleme)
+        self.service_is_active = False
+        self.start_service_monitor()
+        
+    def start_service_monitor(self):
         self.check_service_status()
+        self.after(2500, self.start_service_monitor)
         
     def setup_ui(self):
         self.configure(fg_color="#111215")
@@ -469,6 +474,9 @@ class DiscordFixApp(ctk.CTk):
             pass
 
     def cleanup_leftovers(self):
+        # Eğer Windows Hizmeti olarak çalışıyorsa servisi öldürme!
+        if getattr(self, 'service_is_active', False):
+            return
         try:
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -505,6 +513,7 @@ class DiscordFixApp(ctk.CTk):
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             res = subprocess.run(["sc", "query", "GoodbyeDPI"], startupinfo=startupinfo, creationflags=0x08000000, capture_output=True, text=True)
             if "RUNNING" in res.stdout:
+                self.service_is_active = True
                 self.service_status_label.configure(text="Hizmet: 🟢 ÇALIŞIYOR (KALICI)", text_color="#57F287")
                 self.status_badge.configure(text="● KALICI HİZMET AKTİF (DISCORD BAĞLI)", text_color="#57F287")
                 self.status_desc.configure(
@@ -513,9 +522,16 @@ class DiscordFixApp(ctk.CTk):
                 )
                 self.action_btn.configure(state="disabled", text="DİSCORD KALICI HİZMETİ ÇALIŞIYOR")
             elif "STOPPED" in res.stdout:
+                self.service_is_active = False
                 self.service_status_label.configure(text="Hizmet: 🟡 DURDURULDU", text_color="#faa61a")
+                if not self.is_running:
+                    self.action_btn.configure(state="normal", text="DİSCORD KORUMASINI ANLIK BAŞLAT")
+                    self.status_badge.configure(text="● KORUMA KAPALI", text_color="#ed4245")
             else:
+                self.service_is_active = False
                 self.service_status_label.configure(text="Hizmet: ⚪ KURULU DEĞİL", text_color="#949ba4")
+                if not self.is_running:
+                    self.action_btn.configure(state="normal", text="DİSCORD KORUMASINI ANLIK BAŞLAT")
         except Exception:
             pass
 
@@ -534,8 +550,8 @@ class DiscordFixApp(ctk.CTk):
         args = PROFILES.get(profile_key, PROFILES["Türk Telekom / TurkNet / Kablonet (Önerilen)"])
         args_str = " ".join(args)
         
-        # cmd.exe aracılığıyla tam tırnaklı binPath oluştur (Parametre hatasını önler)
-        cmd_service = f'cmd.exe /c "sc stop GoodbyeDPI & sc delete GoodbyeDPI & sc stop WinDivert & sc delete WinDivert & sc create GoodbyeDPI binPath= "\\"{perm_bin}\\" {args_str} --blacklist \\"{perm_domains}\\"" start= auto & sc description GoodbyeDPI "Yalnizca Discord DPI Engelini Kaldirir (Exelans)" & sc start GoodbyeDPI"'
+        # cmd.exe aracılığıyla tam tırnaklı binPath ve otomatik kurtarma (sc failure restart) ekle
+        cmd_service = f'cmd.exe /c "sc stop GoodbyeDPI & sc delete GoodbyeDPI & sc stop WinDivert & sc delete WinDivert & sc create GoodbyeDPI binPath= "\\"{perm_bin}\\" {args_str} --blacklist \\"{perm_domains}\\"" start= auto & sc description GoodbyeDPI "Yalnizca Discord DPI Engelini Kaldirir (Exelans)" & sc failure GoodbyeDPI reset= 86400 actions= restart/2000/restart/2000/restart/5000 & sc start GoodbyeDPI"'
         
         try:
             startupinfo = subprocess.STARTUPINFO()
